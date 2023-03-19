@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+    <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+    <div class="total">
+        <h2>猜數字遊戲</h2>
+        <button onclick="reset()" id="reset1"><span>重新開始</span></button>
+        <div class="header">
+            <h4>玩家擬猜的數字0-9</h4>
+        </div>
+        <div class="article">
+            <input type="text" maxlength="1" name="button1" class="user-ans" id="button1" size="5" value=""
+                onkeyup="value=value.replace(/[^(\d)]/g,'')">
+            <input type="text" maxlength="1" name="button2" class="user-ans" id="button2" size="5" value=""
+                onkeyup="value=value.replace(/[^(\d)]/g,'')">
+            <input type="text" maxlength="1" name="button3" class="user-ans" id="button3" size="5" value=""
+                onkeyup="value=value.replace(/[^(\d)]/g,'')">
+            <input type="text" maxlength="1" name="button4" class="user-ans" id="button4" size="5" value=""
+                onkeyup="value=value.replace(/[^(\d)]/g,'')">
+            <input type="text" maxlength="1" name="button5" class="user-ans" id="button5" size="5" value=""
+                onkeyup="value=value.replace(/[^(\d)]/g,'')">
+        </div>
+        <div class="goRandom1">
+            <button onclick="checkResult()" class="">檢視猜測結果</button>
+        </div>
+        <div class="article1">
+            <p id="randomResult"></p>
+            <p id="randomResult2"></p>
+        </div>
+        <hr>
+        <div class="answer1">
+            <button onclick="hideAnswer()" class="answer2">莊家答案</button>
+            <div class="answer3">
+                <p name="玩家數字" id="answer">ans</p>
+            </div>
+        </div>
+    </div>
+    <p id="warn">數字重複了!!請輸入其他數字!!</p>
+    <script>
+        document.getElementById("button1").focus();
+        var randomArr = [];
+        setRandom();
+        function setRandom() {
+            var randomNum;
+            for (i = 0; i < 5; i++) {//0-9隨機五個數
+                randomNum = Math.floor(Math.random() * 10);
+                for (j = 0; j < randomArr.length; j++) {
+                    if (randomArr[j] === randomNum) {
+                        randomArr.splice(j, 1);//不重複
+                        i--;//扣掉多的數再跑一次
+                    }
+                }
+                randomArr.push(randomNum);
+            } console.log(randomArr);
+        }
+
+        function checkResult() {
+            var inputs = document.querySelectorAll(".user-ans");
+            var randomArr1 = [];//檢視猜對的數
+            for (let i = 0; i < inputs.length; i++) {//讓輸入的數字去跑迴圈
+                /*escape:*/ for (let j = 0; j < randomArr.length; j++) {//答案的數字
+                    if (inputs[i].value === "") {//如果有空字串就跳出
+                        break;
+                    } else {
+                        if (inputs[i].value == randomArr[j]) {//輸入的值跟答案一樣
+                            for (k = 0; k < randomArr1.length; k++) {
+                                if (randomArr1[k] == inputs[i].value) {//不重複答案
+                                    break
+                                    //escape;
+                                }
+                            }
+                            randomArr1.push(Number(inputs[i].value));
+                        }
+
+                    }
+
+                }
+            }
+            console.log(`ccc:${randomArr1}`)
+
+            if (randomArr1.length === inputs.length) {
+                randomResult2.innerHTML = "恭喜你全部猜對了!!";
+                randomResult.innerHTML = randomArr1.sort();//排序
+            } else {
+                randomResult.innerHTML = randomArr1.sort();
+                randomResult2.innerHTML = "你猜對" + randomArr1.length + "個數字\
+                ";
+                console.log("恭喜你猜對" + randomArr1.length + "個數字");
+            }
+        }
+        //不重複輸入數字
+        var inputs = document.querySelectorAll(".user-ans");
+        for (let i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("change", checkDuplicate);//物件內容改變時觸發checkDuplicate
+        }
+        function checkDuplicate() {
+            for (let i = 0, count = 0; i < inputs.length; i++) {
+                console.log(inputs[i].value);
+                if (inputs[i].value == this.value) {//當有兩個一樣的值
+                    count++;
+                }
+                if (count == 2) {
+                    this.value = "";//讓第二個重複的值變空字串
+                    document.getElementById("warn").style.visibility = "visible";//顯示
+
+                    setTimeout(function () {
+                        document.getElementById("warn").style.visibility = "hidden";
+                    }, 1000);//過了一秒隱藏
+                    break;
+                }
+            }
+        }
+
+        function hideAnswer() {
+            answer.innerHTML = "答案" + randomArr.sort();//觸發時秀出答案
+            var answerShow = document.getElementById("answer");//選取P的id
+            if (answerShow.style.display === "block") {//當有顯示畫面時
+                answerShow.style.display = "none";
+            } else {
+                answerShow.style.display = "block";
+            }
+        }
+
+        function reset() {
+            randomArr = [];
+            document.getElementById('button1').value = "";
+            document.getElementById('button2').value = "";
+            document.getElementById('button3').value = "";
+            document.getElementById('button4').value = "";
+            document.getElementById('button5').value = "";
+            document.getElementById('randomResult').innerHTML = "";
+            document.getElementById('randomResult2').innerHTML = "";
+            document.getElementById('answer').innerHTML = "";
+            setRandom();
+        }
+    </script>
+
+</body>
+
+</html>
